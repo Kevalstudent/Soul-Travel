@@ -7,11 +7,11 @@ const api = axios.create({
 
 // API Keys - In production, these should be in environment variables
 const API_KEYS = {
-  AMADEUS_CLIENT_ID: process.env.VITE_AMADEUS_CLIENT_ID || 'your_amadeus_client_id',
-  AMADEUS_CLIENT_SECRET: process.env.VITE_AMADEUS_CLIENT_SECRET || 'your_amadeus_client_secret',
-  BOOKING_API_KEY: process.env.VITE_BOOKING_API_KEY || 'your_booking_api_key',
-  SKYSCANNER_API_KEY: process.env.VITE_SKYSCANNER_API_KEY || 'your_skyscanner_api_key',
-  OPENCAGE_API_KEY: process.env.VITE_OPENCAGE_API_KEY || 'your_opencage_api_key',
+  AMADEUS_CLIENT_ID: import.meta.env.VITE_AMADEUS_CLIENT_ID || 'your_amadeus_client_id',
+  AMADEUS_CLIENT_SECRET: import.meta.env.VITE_AMADEUS_CLIENT_SECRET || 'your_amadeus_client_secret',
+  BOOKING_API_KEY: import.meta.env.VITE_BOOKING_API_KEY || 'your_booking_api_key',
+  SKYSCANNER_API_KEY: import.meta.env.VITE_SKYSCANNER_API_KEY || 'your_skyscanner_api_key',
+  OPENCAGE_API_KEY: import.meta.env.VITE_OPENCAGE_API_KEY || 'your_opencage_api_key',
 };
 
 // Amadeus API for flights
@@ -274,7 +274,7 @@ class WeatherAPI {
       const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather`, {
         params: {
           q: city,
-          appid: process.env.VITE_OPENWEATHER_API_KEY,
+          appid: import.meta.env.VITE_OPENWEATHER_API_KEY,
           units: 'metric',
         },
       });
