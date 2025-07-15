@@ -2,8 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Plane, Hotel, Users, Film, HelpCircle, Globe, Bus, Route, Ticket, MapPin } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const HomePage: React.FC = () => {
+  const { isDarkMode } = useTheme();
+
   const features = [
     {
       icon: Plane,
@@ -69,21 +72,38 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="relative">
-      {/* Hero Section with Ocean Video */}
-      <div className="relative h-screen w-full overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: 'brightness(0.4)' }}
-        >
-          <source src="https://player.vimeo.com/external/391979969.sd.mp4?s=a4f9c2d5c4b5e4d0a2b9c3d0e4f5a6b7c8d9e0f1&profile_id=164" type="video/mp4" />
-        </video>
-        
-        <div className="absolute inset-0 bg-black bg-opacity-30" />
-        
-        <div className="relative z-10 flex items-center justify-center h-full">
+      {/* Hero Section with Split Video Layout */}
+      <div className="relative h-screen w-full overflow-hidden flex">
+        {/* Ocean Video - Left Half */}
+        <div className="relative w-1/2 h-full">
+          <video
+            autoPlay
+            muted
+            loop
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(0.4)' }}
+          >
+            <source src="https://player.vimeo.com/external/391979969.sd.mp4?s=a4f9c2d5c4b5e4d0a2b9c3d0e4f5a6b7c8d9e0f1&profile_id=164" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-black bg-opacity-30" />
+        </div>
+
+        {/* Island Video - Right Half */}
+        <div className="relative w-1/2 h-full">
+          <video
+            autoPlay
+            muted
+            loop
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'brightness(0.4)' }}
+          >
+            <source src="https://player.vimeo.com/external/370467553.sd.mp4?s=e90dcaba73c02b6c94b1d0b1c2b6c4d5e6f7a8b9&profile_id=164" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-black bg-opacity-30" />
+        </div>
+
+        {/* Hero Content Overlay */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
           <div className="text-center px-4 max-w-4xl mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: -50 }}
@@ -127,13 +147,19 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Features Section */}
-      <section className="py-20 bg-black">
+      <section className={`py-20 transition-colors duration-300 ${
+        isDarkMode ? 'bg-black' : 'bg-gray-50'
+      }`}>
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className={`text-4xl md:text-5xl font-bold mb-6 transition-colors ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}>
               Why Choose Soul Travel?
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className={`text-xl max-w-3xl mx-auto transition-colors ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}>
               We're not just another travel site. We're your journey companion, your inspiration, and your ticket to the best experiences around the world.
             </p>
           </div>
@@ -145,13 +171,21 @@ const HomePage: React.FC = () => {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-gray-900 rounded-xl p-6 hover:bg-gray-800 transition-all duration-300 hover:transform hover:scale-105 group"
+                className={`rounded-xl p-6 transition-all duration-300 hover:transform hover:scale-105 group ${
+                  isDarkMode 
+                    ? 'bg-gray-900 hover:bg-gray-800' 
+                    : 'bg-white hover:bg-gray-50 shadow-lg hover:shadow-xl'
+                }`}
               >
                 <div className="flex items-center justify-center w-16 h-16 bg-cyan-500 rounded-lg mb-4 group-hover:bg-cyan-400 transition-colors">
                   <feature.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-400 mb-4">{feature.description}</p>
+                <h3 className={`text-xl font-semibold mb-3 transition-colors ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}>{feature.title}</h3>
+                <p className={`mb-4 transition-colors ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>{feature.description}</p>
                 <Link
                   to={feature.link}
                   className="text-cyan-400 hover:text-cyan-300 font-medium inline-flex items-center group"
