@@ -80,12 +80,14 @@ const HomePage: React.FC = () => {
             autoPlay
             muted
             loop
+            playsInline
             className="absolute inset-0 w-full h-full object-cover"
             style={{ filter: 'brightness(0.4)' }}
           >
-            <source src="https://player.vimeo.com/external/391979969.sd.mp4?s=a4f9c2d5c4b5e4d0a2b9c3d0e4f5a6b7c8d9e0f1&profile_id=164" type="video/mp4" />
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+            <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-transparent" />
         </div>
 
         {/* Island Video - Right Half */}
@@ -94,12 +96,14 @@ const HomePage: React.FC = () => {
             autoPlay
             muted
             loop
+            playsInline
             className="absolute inset-0 w-full h-full object-cover"
             style={{ filter: 'brightness(0.4)' }}
           >
-            <source src="https://player.vimeo.com/external/370467553.sd.mp4?s=e90dcaba73c02b6c94b1d0b1c2b6c4d5e6f7a8b9&profile_id=164" type="video/mp4" />
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
+            <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-black bg-opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-l from-green-900/50 to-transparent" />
         </div>
 
         {/* Hero Content Overlay */}
@@ -109,7 +113,7 @@ const HomePage: React.FC = () => {
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="text-5xl md:text-7xl font-bold text-white mb-6"
+              className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl"
             >
               Explore the World with Soul
             </motion.h1>
@@ -118,7 +122,7 @@ const HomePage: React.FC = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto"
+              className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto drop-shadow-lg"
             >
               Your journey begins here. Flights, stays, adventures, and unforgettable memories all in one place.
             </motion.p>
