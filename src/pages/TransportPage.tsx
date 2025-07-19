@@ -290,7 +290,7 @@ const TransportPage: React.FC = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {activeType !== 'live-map' &&
-          {filteredTransport.map((option) => {
+          filteredTransport.map((option) => {
             const IconComponent = getTransportIcon(option.type);
             return (
               <div key={option.id} className="bg-gray-900 rounded-xl overflow-hidden hover:bg-gray-800 transition-all duration-300 hover:transform hover:scale-105">
@@ -360,7 +360,6 @@ const TransportPage: React.FC = () => {
               </div>
             );
           })}
-          }
         </motion.div>
       </div>
     </div>
