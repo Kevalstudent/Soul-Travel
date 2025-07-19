@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Search, Filter, Navigation, Plane, Hotel, Camera, Coffee } from 'lucide-react';
+import { MapPin, Search, Filter, Navigation, Plane, Hotel, Camera, Coffee, AlertTriangle, Shield, Car, Users } from 'lucide-react';
 
 const MapPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [mapView, setMapView] = useState('safety');
 
   const filters = [
     { id: 'all', label: 'All', icon: MapPin },
@@ -12,6 +13,12 @@ const MapPage: React.FC = () => {
     { id: 'hotels', label: 'Hotels', icon: Hotel },
     { id: 'restaurants', label: 'Restaurants', icon: Coffee },
     { id: 'airports', label: 'Airports', icon: Plane },
+  ];
+
+  const mapViews = [
+    { id: 'safety', label: 'Safety Zones', icon: Shield },
+    { id: 'traffic', label: 'Traffic', icon: Car },
+    { id: 'tourist', label: 'Tourist Spots', icon: Camera },
   ];
 
   const locations = [
@@ -24,7 +31,10 @@ const MapPage: React.FC = () => {
       rating: 4.8,
       reviews: 25467,
       coordinates: { lat: 48.8584, lng: 2.2945 },
-      image: 'https://images.pexels.com/photos/1388030/pexels-photo-1388030.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://images.pexels.com/photos/1388030/pexels-photo-1388030.jpeg?auto=compress&cs=tinysrgb&w=400',
+      safetyLevel: 'high',
+      trafficLevel: 'medium',
+      touristPopularity: 'very-high'
     },
     {
       id: 2,
@@ -35,7 +45,10 @@ const MapPage: React.FC = () => {
       rating: 4.9,
       reviews: 1234,
       coordinates: { lat: 48.8655, lng: 2.3034 },
-      image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=400',
+      safetyLevel: 'high',
+      trafficLevel: 'low',
+      touristPopularity: 'high'
     },
     {
       id: 3,
@@ -46,7 +59,10 @@ const MapPage: React.FC = () => {
       rating: 4.7,
       reviews: 567,
       coordinates: { lat: 48.8506, lng: 2.3387 },
-      image: 'https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=400',
+      safetyLevel: 'medium',
+      trafficLevel: 'high',
+      touristPopularity: 'medium'
     },
     {
       id: 4,
@@ -57,7 +73,10 @@ const MapPage: React.FC = () => {
       rating: 4.2,
       reviews: 8934,
       coordinates: { lat: 49.0097, lng: 2.5479 },
-      image: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=400'
+      image: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=400',
+      safetyLevel: 'high',
+      trafficLevel: 'very-high',
+      touristPopularity: 'low'
     }
   ];
 
@@ -75,6 +94,25 @@ const MapPage: React.FC = () => {
       case 'restaurants': return Coffee;
       case 'airports': return Plane;
       default: return MapPin;
+    }
+  };
+
+  const getSafetyColor = (level: string) => {
+    switch (level) {
+      case 'high': return 'text-green-400';
+      case 'medium': return 'text-yellow-400';
+      case 'low': return 'text-red-400';
+      default: return 'text-gray-400';
+    }
+  };
+
+  const getTrafficColor = (level: string) => {
+    switch (level) {
+      case 'low': return 'text-green-400';
+      case 'medium': return 'text-yellow-400';
+      case 'high': return 'text-orange-400';
+      case 'very-high': return 'text-red-400';
+      default: return 'text-gray-400';
     }
   };
 
@@ -127,6 +165,27 @@ const MapPage: React.FC = () => {
               );
             })}
           </div>
+
+          <div className="flex flex-wrap gap-4 mt-4">
+            <span className="text-gray-400">Map View:</span>
+            {mapViews.map((view) => {
+              const IconComponent = view.icon;
+              return (
+                <button
+                  key={view.id}
+                  onClick={() => setMapView(view.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    mapView === view.id
+                      ? 'bg-cyan-500 text-white'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  }`}
+                >
+                  <IconComponent className="w-4 h-4" />
+                  {view.label}
+                </button>
+              );
+            })}
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -138,13 +197,63 @@ const MapPage: React.FC = () => {
             className="lg:col-span-2"
           >
             <div className="bg-gray-900 rounded-xl p-6 h-96 lg:h-[600px] flex items-center justify-center">
-              <div className="text-center">
-                <Navigation className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-2xl font-semibold text-white mb-2">Interactive Map</h3>
-                <p className="text-gray-400">Map integration would be implemented here</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  This would typically use Google Maps, Mapbox, or similar service
-                </p>
+              <div className="w-full h-full relative">
+                <div className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full text-sm z-10">
+                  {mapViews.find(v => v.id === mapView)?.label} View
+                </div>
+                
+                {/* Mock Map with Data Points */}
+                <div className="w-full h-full bg-gray-800 rounded-lg relative overflow-hidden">
+                  {/* Background pattern to simulate map */}
+                  <div className="absolute inset-0 opacity-20">
+                    <div className="grid grid-cols-8 grid-rows-6 h-full">
+                      {Array.from({ length: 48 }).map((_, i) => (
+                        <div key={i} className="border border-gray-600"></div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Data Points */}
+                  {filteredLocations.map((location, index) => (
+                    <div
+                      key={location.id}
+                      className={`absolute w-4 h-4 rounded-full cursor-pointer transform -translate-x-2 -translate-y-2 ${
+                        mapView === 'safety' ? getSafetyColor(location.safetyLevel) + ' bg-current' :
+                        mapView === 'traffic' ? getTrafficColor(location.trafficLevel) + ' bg-current' :
+                        'bg-cyan-400'
+                      }`}
+                      style={{
+                        left: `${20 + (index * 15)}%`,
+                        top: `${30 + (index * 10)}%`
+                      }}
+                      title={location.name}
+                    />
+                  ))}
+                  
+                  {/* Legend */}
+                  <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white p-3 rounded-lg text-xs">
+                    {mapView === 'safety' && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-1"><div className="w-3 h-3 bg-green-400 rounded-full"></div>Safe</div>
+                        <div className="flex items-center gap-2 mb-1"><div className="w-3 h-3 bg-yellow-400 rounded-full"></div>Caution</div>
+                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-red-400 rounded-full"></div>Dangerous</div>
+                      </div>
+                    )}
+                    {mapView === 'traffic' && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-1"><div className="w-3 h-3 bg-green-400 rounded-full"></div>Light</div>
+                        <div className="flex items-center gap-2 mb-1"><div className="w-3 h-3 bg-yellow-400 rounded-full"></div>Moderate</div>
+                        <div className="flex items-center gap-2 mb-1"><div className="w-3 h-3 bg-orange-400 rounded-full"></div>Heavy</div>
+                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-red-400 rounded-full"></div>Congested</div>
+                      </div>
+                    )}
+                    {mapView === 'tourist' && (
+                      <div>
+                        <div className="flex items-center gap-2"><div className="w-3 h-3 bg-cyan-400 rounded-full"></div>Tourist Spots</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -182,6 +291,28 @@ const MapPage: React.FC = () => {
                           </div>
                           <span className="text-gray-400 text-sm">({location.reviews} reviews)</span>
                         </div>
+                        
+                        {/* Additional Info based on map view */}
+                        <div className="mt-2 text-xs">
+                          {mapView === 'safety' && (
+                            <div className={`flex items-center gap-1 ${getSafetyColor(location.safetyLevel)}`}>
+                              <Shield className="w-3 h-3" />
+                              Safety: {location.safetyLevel}
+                            </div>
+                          )}
+                          {mapView === 'traffic' && (
+                            <div className={`flex items-center gap-1 ${getTrafficColor(location.trafficLevel)}`}>
+                              <Car className="w-3 h-3" />
+                              Traffic: {location.trafficLevel}
+                            </div>
+                          )}
+                          {mapView === 'tourist' && (
+                            <div className="flex items-center gap-1 text-cyan-400">
+                              <Users className="w-3 h-3" />
+                              Popularity: {location.touristPopularity}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -198,45 +329,49 @@ const MapPage: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Map Controls */}
+        {/* Map Statistics */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
           className="mt-8 bg-gray-900 rounded-xl p-6"
         >
-          <h3 className="text-xl font-bold text-white mb-4">Map Features</h3>
+          <h3 className="text-xl font-bold text-white mb-4">Live Map Statistics</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gray-800 rounded-lg p-4">
               <div className="flex items-center gap-3 mb-2">
-                <Navigation className="w-6 h-6 text-cyan-400" />
-                <h4 className="text-white font-semibold">Navigation</h4>
+                <Shield className="w-6 h-6 text-green-400" />
+                <h4 className="text-white font-semibold">Safe Areas</h4>
               </div>
-              <p className="text-gray-400 text-sm">Get directions between locations</p>
+              <p className="text-2xl font-bold text-green-400">85%</p>
+              <p className="text-gray-400 text-sm">of monitored locations</p>
             </div>
             
             <div className="bg-gray-800 rounded-lg p-4">
               <div className="flex items-center gap-3 mb-2">
-                <Filter className="w-6 h-6 text-cyan-400" />
-                <h4 className="text-white font-semibold">Filters</h4>
+                <Car className="w-6 h-6 text-yellow-400" />
+                <h4 className="text-white font-semibold">Traffic Flow</h4>
               </div>
-              <p className="text-gray-400 text-sm">Filter by type, rating, and price</p>
+              <p className="text-2xl font-bold text-yellow-400">Moderate</p>
+              <p className="text-gray-400 text-sm">current conditions</p>
             </div>
             
             <div className="bg-gray-800 rounded-lg p-4">
               <div className="flex items-center gap-3 mb-2">
-                <MapPin className="w-6 h-6 text-cyan-400" />
-                <h4 className="text-white font-semibold">Bookmarks</h4>
+                <Camera className="w-6 h-6 text-cyan-400" />
+                <h4 className="text-white font-semibold">Tourist Spots</h4>
               </div>
-              <p className="text-gray-400 text-sm">Save favorite locations</p>
+              <p className="text-2xl font-bold text-cyan-400">247</p>
+              <p className="text-gray-400 text-sm">verified locations</p>
             </div>
             
             <div className="bg-gray-800 rounded-lg p-4">
               <div className="flex items-center gap-3 mb-2">
-                <Search className="w-6 h-6 text-cyan-400" />
-                <h4 className="text-white font-semibold">Search</h4>
+                <Coffee className="w-6 h-6 text-orange-400" />
+                <h4 className="text-white font-semibold">Restaurants</h4>
               </div>
-              <p className="text-gray-400 text-sm">Find specific places quickly</p>
+              <p className="text-2xl font-bold text-orange-400">1,234</p>
+              <p className="text-gray-400 text-sm">rated establishments</p>
             </div>
           </div>
         </motion.div>
