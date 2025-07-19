@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "serve": "python -m http.server 8000 --directory dist",
+    "serve-py": "python serve.py",
     "lint": "eslint .",
     "preview": "vite preview"
   },
