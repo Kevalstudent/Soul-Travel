@@ -40,7 +40,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Link to="/" className={`text-2xl font-bold tracking-wider transition-colors ${
               isDarkMode ? 'text-white' : 'text-gray-900'
             }`}>
-              Soul Travel
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center">
+                  <Plane className="w-5 h-5 text-white transform rotate-45" />
+                </div>
+                Soul Travel
+              </div>
             </Link>
             
             <div className="flex items-center gap-4">
