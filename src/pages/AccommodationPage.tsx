@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, MapPin, Calendar, Users, Star, Wifi, Car, Coffee, Loader, Hotel } from 'lucide-react';
-import { useAccommodationSearch } from '../hooks/useAccommodationSearch';
-import { AccommodationSearchParams } from '../services/api';
+import CurrencySelector from '../components/CurrencySelector';
+import { CurrencyService } from '../services/currencyService';
 
 const AccommodationPage: React.FC = () => {
-  const { accommodations, loading, error, searchAccommodations } = useAccommodationSearch();
+  const [accommodations, setAccommodations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('ZAR');
   const [searchParams, setSearchParams] = useState({
     destination: '',
     checkIn: '',
@@ -15,22 +17,56 @@ const AccommodationPage: React.FC = () => {
     propertyType: 'all'
   });
 
+  // Mock accommodation data
+  const mockAccommodations = [
+    {
+      id: '1',
+      name: 'Cape Grace Hotel',
+      location: 'Cape Town, South Africa',
+      price: 4500, // Price in ZAR per night
+      rating: 4.8,
+      reviews: 1234,
+      image: 'https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=600',
+      amenities: ['Wifi', 'Pool', 'Spa', 'Restaurant'],
+      type: 'Luxury Hotel'
+    },
+    {
+      id: '2',
+      name: 'Silo Hotel',
+      location: 'Cape Town, South Africa',
+      price: 8900,
+      rating: 4.9,
+      reviews: 856,
+      image: 'https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=600',
+      amenities: ['Wifi', 'Gym', 'Business Center', 'Parking'],
+      type: 'Boutique Hotel'
+    },
+    {
+      id: '3',
+      name: 'Camps Bay Villa',
+      location: 'Cape Town, South Africa',
+      price: 12500,
+      rating: 4.7,
+      reviews: 456,
+      image: 'https://images.pexels.com/photos/1029599/pexels-photo-1029599.jpeg?auto=compress&cs=tinysrgb&w=600',
+      amenities: ['Wifi', 'Pool', 'Ocean View', 'Kitchen'],
+      type: 'Villa'
+    }
+  ];
+
   const handleSearch = async () => {
     if (!searchParams.destination || !searchParams.checkIn || !searchParams.checkOut) {
       alert('Please fill in all required fields');
       return;
     }
 
-    const accommodationSearchParams: AccommodationSearchParams = {
-      destination: searchParams.destination,
-      checkIn: searchParams.checkIn,
-      checkOut: searchParams.checkOut,
-      guests: searchParams.guests,
-      rooms: searchParams.rooms,
-      propertyType: searchParams.propertyType === 'all' ? undefined : searchParams.propertyType,
-    };
-
-    await searchAccommodations(accommodationSearchParams);
+    setLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setAccommodations(mockAccommodations);
+      setLoading(false);
+    }, 1500);
   };
 
   const handleInputChange = (field: string, value: string | number) => {
@@ -157,6 +193,14 @@ const AccommodationPage: React.FC = () => {
             </div>
           </div>
 
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">Currency</label>
+            <CurrencySelector
+              selectedCurrency={selectedCurrency}
+              onCurrencyChange={setSelectedCurrency}
+            />
+          </div>
+
           <button
             onClick={handleSearch}
             disabled={loading}
@@ -177,15 +221,6 @@ const AccommodationPage: React.FC = () => {
         </motion.div>
 
         {/* Error Message */}
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 bg-red-900 border border-red-700 rounded-lg p-4"
-          >
-            <p className="text-red-200">{error}</p>
-          </motion.div>
-        )}
 
         {/* Search Results */}
         <motion.div
@@ -227,7 +262,7 @@ const AccommodationPage: React.FC = () => {
                 
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl font-semibold text-white">{property.name}</h3>
+                    <span className="text-2xl font-bold text-white">{CurrencyService.formatPrice(property.price, selectedCurrency)}</span>
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
                       <span className="text-white font-semibold">{property.rating}</span>

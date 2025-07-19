@@ -73,38 +73,20 @@ const HomePage: React.FC = () => {
   return (
     <div className="relative">
       {/* Hero Section with Split Video Layout */}
-      <div className="relative h-screen w-full overflow-hidden flex">
-        {/* Ocean Video - Left Half */}
-        <div className="relative w-1/2 h-full">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.4)' }}
-          >
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-            <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 to-transparent" />
-        </div>
-
-        {/* Island Video - Right Half */}
-        <div className="relative w-1/2 h-full">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.4)' }}
-          >
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
-            <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-l from-green-900/50 to-transparent" />
-        </div>
+      <div className="relative h-screen w-full overflow-hidden">
+        {/* Single Background Video - Waves from Bird's Eye View */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'brightness(0.3)' }}
+        >
+          <source src="https://player.vimeo.com/external/370467553.sd.mp4?s=e90dcaba73c19b0e36f03406b47bbd6a92d6da17&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
+          <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
 
         {/* Hero Content Overlay */}
         <div className="absolute inset-0 z-10 flex items-center justify-center">

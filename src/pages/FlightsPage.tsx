@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, Calendar, Users, Plane, Loader } from 'lucide-react';
-import { useFlightSearch } from '../hooks/useFlightSearch';
-import { FlightSearchParams } from '../services/api';
-import AirportAutocomplete from '../components/AirportAutocomplete';
+import CurrencySelector from '../components/CurrencySelector';
+import { CurrencyService } from '../services/currencyService';
 
 const FlightsPage: React.FC = () => {
-  const { flights, loading, error, searchFlights } = useFlightSearch();
+  const [flights, setFlights] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('ZAR');
   const [searchParams, setSearchParams] = useState({
     from: '',
-    fromCode: '',
     to: '',
-    toCode: '',
     departDate: '',
     returnDate: '',
     class: 'economy',
@@ -20,38 +19,68 @@ const FlightsPage: React.FC = () => {
     infants: 0
   });
 
+  // Mock flight data
+  const mockFlights = [
+    {
+      id: '1',
+      airline: 'South African Airways',
+      from: 'JNB',
+      to: 'CPT',
+      departure: '08:30',
+      arrival: '10:45',
+      duration: '2h 15m',
+      price: 1850, // Price in ZAR
+      class: 'Economy',
+      stops: 'Direct',
+      image: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=600'
+    },
+    {
+      id: '2',
+      airline: 'Emirates',
+      from: 'JNB',
+      to: 'DXB',
+      departure: '14:20',
+      arrival: '23:35',
+      duration: '8h 15m',
+      price: 12500,
+      class: 'Economy',
+      stops: 'Direct',
+      image: 'https://images.pexels.com/photos/2026324/pexels-photo-2026324.jpeg?auto=compress&cs=tinysrgb&w=600'
+    },
+    {
+      id: '3',
+      airline: 'British Airways',
+      from: 'JNB',
+      to: 'LHR',
+      departure: '19:45',
+      arrival: '06:30+1',
+      duration: '11h 45m',
+      price: 15800,
+      class: 'Economy',
+      stops: 'Direct',
+      image: 'https://images.pexels.com/photos/1309644/pexels-photo-1309644.jpeg?auto=compress&cs=tinysrgb&w=600'
+    }
+  ];
+
   const handleSearch = async () => {
-    if (!searchParams.fromCode || !searchParams.toCode || !searchParams.departDate) {
+    if (!searchParams.from || !searchParams.to || !searchParams.departDate) {
       alert('Please fill in all required fields');
       return;
     }
 
-    const flightSearchParams: FlightSearchParams = {
-      from: searchParams.fromCode,
-      to: searchParams.toCode,
-      departDate: searchParams.departDate,
-      returnDate: searchParams.returnDate,
-      adults: searchParams.adults,
-      children: searchParams.children,
-      infants: searchParams.infants,
-      class: searchParams.class,
-    };
-
-    await searchFlights(flightSearchParams);
+    setLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setFlights(mockFlights);
+      setLoading(false);
+    }, 1500);
   };
 
   const handleInputChange = (field: string, value: string | number) => {
     setSearchParams(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  const handleAirportChange = (field: 'from' | 'to', value: string, airport?: any) => {
-    setSearchParams(prev => ({
-      ...prev,
-      [field]: value,
-      [`${field}Code`]: airport?.code || value,
     }));
   };
 
@@ -77,18 +106,22 @@ const FlightsPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">From</label>
-              <AirportAutocomplete
+              <input
+                type="text"
                 value={searchParams.from}
-                onChange={(value, airport) => handleAirportChange('from', value, airport)}
+                onChange={(e) => handleInputChange('from', e.target.value)}
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Departure city or airport"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">To</label>
-              <AirportAutocomplete
+              <input
+                type="text"
                 value={searchParams.to}
-                onChange={(value, airport) => handleAirportChange('to', value, airport)}
+                onChange={(e) => handleInputChange('to', e.target.value)}
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 placeholder="Destination city or airport"
               />
             </div>
@@ -174,6 +207,14 @@ const FlightsPage: React.FC = () => {
             </div>
           </div>
 
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">Currency</label>
+            <CurrencySelector
+              selectedCurrency={selectedCurrency}
+              onCurrencyChange={setSelectedCurrency}
+            />
+          </div>
+
           <button
             onClick={handleSearch}
             disabled={loading}
@@ -194,15 +235,6 @@ const FlightsPage: React.FC = () => {
         </motion.div>
 
         {/* Error Message */}
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 bg-red-900 border border-red-700 rounded-lg p-4"
-          >
-            <p className="text-red-200">{error}</p>
-          </motion.div>
-        )}
 
         {/* Search Results */}
         <motion.div
@@ -231,6 +263,13 @@ const FlightsPage: React.FC = () => {
 
           {flights.map((flight) => (
             <div key={flight.id} className="bg-gray-900 rounded-xl p-6 hover:bg-gray-800 transition-colors">
+              <div className="mb-4">
+                <img
+                  src={flight.image}
+                  alt={flight.airline}
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+              </div>
               <div className="flex flex-col md:flex-row items-center justify-between">
                 <div className="flex items-center gap-6 mb-4 md:mb-0">
                   <div className="flex items-center gap-2">
@@ -257,7 +296,7 @@ const FlightsPage: React.FC = () => {
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-white">${flight.price}</div>
+                  <div className="text-3xl font-bold text-white">{CurrencyService.formatPrice(flight.price, selectedCurrency)}</div>
                   <div className="text-sm text-gray-400 mb-2">{flight.class}</div>
                   <button className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
                     Select
